@@ -14,20 +14,21 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
-@WebServlet("/api/v1/order")
-public class OrderServelet extends HttpServlet {
+@WebServlet("/api/v1/oderDetail")
+public class OrderDetailServelet extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         Connection connection = DbConnection.getInstance().getConnection();
         try {
-            PreparedStatement prst = connection.prepareStatement("SELECT * FROM `order`");
+            PreparedStatement prst = connection.prepareStatement("SELECT * FROM OrderDetail");
             ResultSet resultSet = prst.executeQuery();
             JsonArrayBuilder array = Json.createArrayBuilder();
             while (resultSet.next()) {
                 JsonObjectBuilder obj = Json.createObjectBuilder();
-                obj.add("id", resultSet.getString(1));
-                obj.add("date", resultSet.getString(2));
-                obj.add("customerId", resultSet.getString(3));
+                obj.add("ItemId", resultSet.getString(1));
+                obj.add("OrderId", resultSet.getString(2));
+                obj.add("Qty", resultSet.getString(3));
+                obj.add("UnitPrice", resultSet.getString(4));
                 array.add(obj);
             }
             resp.setHeader("Access-controll-allow-origin", "*");
@@ -46,10 +47,11 @@ public class OrderServelet extends HttpServlet {
             JsonReader reader = Json.createReader(req.getReader());
             JsonObject jsonObject = reader.readObject();
 
-            PreparedStatement prstm = connection.prepareStatement("INSERT INTO `order` VALUES(?,?,?)");
-            prstm.setObject(1, jsonObject.getString("id"));
-            prstm.setObject(2, jsonObject.getString("date"));
-            prstm.setObject(3, jsonObject.getString("customerId"));
+            PreparedStatement prstm = connection.prepareStatement("INSERT INTO OrderDetail VALUES(?,?,?,?)");
+            prstm.setObject(1, jsonObject.getString("ItemId"));
+            prstm.setObject(2, jsonObject.getString("OrderId"));
+            prstm.setObject(3, jsonObject.getString("Qty"));
+            prstm.setObject(4, jsonObject.getString("UnitPrice"));
             prstm.executeUpdate();
             connection.close();
         } catch (SQLException e) {
@@ -64,11 +66,13 @@ public class OrderServelet extends HttpServlet {
             JsonReader reader = Json.createReader(req.getReader());
             JsonObject jsonObject = reader.readObject();
 
-            PreparedStatement prstm = connection.prepareStatement("UPDATE `order` SET date=? ,customerID=? WHERE id=? ");
+            PreparedStatement prstm = connection.prepareStatement("UPDATE OrderDetail SET qty=? ,unitPrice=? WHERE Item_id=? AND Order_id=?");
 
-            prstm.setObject(3, jsonObject.getString("id"));
-            prstm.setObject(1, jsonObject.getString("date"));
-            prstm.setObject(2, jsonObject.getString("customerId"));
+            prstm.setObject(1, jsonObject.getString("Qty"));
+            prstm.setObject(2, jsonObject.getString("UnitPrice"));
+            prstm.setObject(3, jsonObject.getString("ItemId"));
+            prstm.setObject(4, jsonObject.getString("OrderId"));
+
             prstm.executeUpdate();
             connection.close();
         } catch (SQLException e) {
@@ -83,8 +87,9 @@ public class OrderServelet extends HttpServlet {
             JsonReader reader = Json.createReader(req.getReader());
             JsonObject jsonObject = reader.readObject();
 
-            PreparedStatement prstm = connection.prepareStatement("DELETE FROM `order` WHERE id=?");
-            prstm.setObject(1, jsonObject.getString("id"));
+            PreparedStatement prstm = connection.prepareStatement("DELETE FROM OrderDetail WHERE Item_id=? AND Order_id=?");
+            prstm.setObject(1, jsonObject.getString("ItemId"));
+            prstm.setObject(2, jsonObject.getString("OrderId"));
             prstm.executeUpdate();
             connection.close();
         } catch (SQLException e) {
