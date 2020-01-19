@@ -7,6 +7,10 @@
         <element id="directory" name="classes">
           <element id="module-output" name="POS Java EE" />
         </element>
+        <element id="directory" name="lib">
+          <element id="library" level="project" name="javax.json-api-1.1.4" />
+          <element id="library" level="project" name="mysql-connector-java-8.0.17" />
+        </element>
       </element>
     </root>
   </artifact>
