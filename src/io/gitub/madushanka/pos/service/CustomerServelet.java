@@ -23,14 +23,14 @@ public class CustomerServelet extends HttpServlet {
             PreparedStatement prst = connection.prepareStatement("SELECT * FROM Customer");
             ResultSet resultSet = prst.executeQuery();
             JsonArrayBuilder array = Json.createArrayBuilder();
-            while (resultSet.next()){
+            while (resultSet.next()) {
                 JsonObjectBuilder obj = Json.createObjectBuilder();
-                obj.add("id",resultSet.getString(1));
-                obj.add("name",resultSet.getString(2));
-                obj.add("address",resultSet.getString(3));
+                obj.add("id", resultSet.getString(1));
+                obj.add("name", resultSet.getString(2));
+                obj.add("address", resultSet.getString(3));
                 array.add(obj);
             }
-            resp.setHeader("Access-controll-allow-origin","*");
+            resp.setHeader("Access-controll-allow-origin", "*");
             resp.setContentType("application.json");
             resp.getWriter().println(array.build().toString());
             connection.close();
@@ -47,9 +47,9 @@ public class CustomerServelet extends HttpServlet {
             JsonObject jsonObject = reader.readObject();
 
             PreparedStatement prstm = connection.prepareStatement("INSERT INTO Customer VALUES(?,?,?)");
-            prstm.setObject(1,jsonObject.getString("id"));
-            prstm.setObject(2,jsonObject.getString("name"));
-            prstm.setObject(3,jsonObject.getString("address"));
+            prstm.setObject(1, jsonObject.getString("id"));
+            prstm.setObject(2, jsonObject.getString("name"));
+            prstm.setObject(3, jsonObject.getString("address"));
             prstm.executeUpdate();
             connection.close();
         } catch (SQLException e) {
@@ -59,12 +59,35 @@ public class CustomerServelet extends HttpServlet {
 
     @Override
     protected void doPut(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        super.doPut(req, resp);
+        Connection connection = DbConnection.getInstance().getConnection();
+        try {
+            JsonReader reader = Json.createReader(req.getReader());
+            JsonObject jsonObject = reader.readObject();
+
+            PreparedStatement prstm = connection.prepareStatement("UPDATE Customer SET name=? , address=? WHERE customerId=? ");
+            prstm.setObject(3, jsonObject.getString("id"));
+            prstm.setObject(1, jsonObject.getString("name"));
+            prstm.setObject(2, jsonObject.getString("address"));
+            prstm.executeUpdate();
+            connection.close();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
     }
 
     @Override
     protected void doDelete(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        super.doDelete(req, resp);
-    }
+        Connection connection = DbConnection.getInstance().getConnection();
+        try {
+            JsonReader reader = Json.createReader(req.getReader());
+            JsonObject jsonObject = reader.readObject();
 
+            PreparedStatement prstm = connection.prepareStatement("DELETE * FROM Customer WHERE customerId=? ");
+            prstm.setObject(1, jsonObject.getString("id"));
+            prstm.executeUpdate();
+            connection.close();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
 }
