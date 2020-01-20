@@ -16,6 +16,8 @@ import java.sql.SQLException;
 
 @WebServlet(urlPatterns = "/api/v1/customers")
 public class CustomerServelet extends HttpServlet {
+
+
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         Connection connection = DbConnection.getInstance().getConnection();
@@ -30,12 +32,18 @@ public class CustomerServelet extends HttpServlet {
                 obj.add("address", resultSet.getString(3));
                 array.add(obj);
             }
-            resp.setHeader("Access-controll-allow-origin", "*");
             resp.setContentType("application.json");
+            JsonArray build = array.build();
+            resp.setIntHeader("X-Count",build.size());
             resp.getWriter().println(array.build().toString());
-            connection.close();
         } catch (SQLException e) {
             e.printStackTrace();
+        }finally {
+            try {
+                connection.close();
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
         }
     }
 
@@ -51,9 +59,15 @@ public class CustomerServelet extends HttpServlet {
             prstm.setObject(2, jsonObject.getString("name"));
             prstm.setObject(3, jsonObject.getString("address"));
             prstm.executeUpdate();
-            connection.close();
+
         } catch (SQLException e) {
             e.printStackTrace();
+        }finally {
+            try {
+                connection.close();
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
         }
     }
 
@@ -69,9 +83,15 @@ public class CustomerServelet extends HttpServlet {
             prstm.setObject(1, jsonObject.getString("name"));
             prstm.setObject(2, jsonObject.getString("address"));
             prstm.executeUpdate();
-            connection.close();
+
         } catch (SQLException e) {
             e.printStackTrace();
+        }finally {
+            try {
+                connection.close();
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
         }
     }
 
@@ -88,6 +108,12 @@ public class CustomerServelet extends HttpServlet {
             connection.close();
         } catch (SQLException e) {
             e.printStackTrace();
+        }finally {
+            try {
+                connection.close();
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
         }
     }
 }

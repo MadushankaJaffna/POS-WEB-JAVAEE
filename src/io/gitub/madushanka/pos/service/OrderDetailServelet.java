@@ -34,9 +34,15 @@ public class OrderDetailServelet extends HttpServlet {
             resp.setHeader("Access-controll-allow-origin", "*");
             resp.setContentType("application.json");
             resp.getWriter().println(array.build().toString());
-            connection.close();
+
         } catch (SQLException e) {
             e.printStackTrace();
+        }finally {
+            try {
+                connection.close();
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
         }
     }
 
@@ -53,9 +59,15 @@ public class OrderDetailServelet extends HttpServlet {
             prstm.setObject(3, jsonObject.getString("Qty"));
             prstm.setObject(4, jsonObject.getString("UnitPrice"));
             prstm.executeUpdate();
-            connection.close();
+
         } catch (SQLException e) {
             e.printStackTrace();
+        }finally {
+            try {
+                connection.close();
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
         }
     }
 
@@ -74,9 +86,15 @@ public class OrderDetailServelet extends HttpServlet {
             prstm.setObject(4, jsonObject.getString("OrderId"));
 
             prstm.executeUpdate();
-            connection.close();
+
         } catch (SQLException e) {
             e.printStackTrace();
+        }finally {
+            try {
+                connection.close();
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
         }
     }
 
@@ -91,9 +109,15 @@ public class OrderDetailServelet extends HttpServlet {
             prstm.setObject(1, jsonObject.getString("ItemId"));
             prstm.setObject(2, jsonObject.getString("OrderId"));
             prstm.executeUpdate();
-            connection.close();
+
         } catch (SQLException e) {
             e.printStackTrace();
+        }finally {
+            try {
+                connection.close();
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
         }
     }
 }

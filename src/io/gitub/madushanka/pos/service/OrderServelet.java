@@ -33,9 +33,15 @@ public class OrderServelet extends HttpServlet {
             resp.setHeader("Access-controll-allow-origin", "*");
             resp.setContentType("application.json");
             resp.getWriter().println(array.build().toString());
-            connection.close();
+
         } catch (SQLException e) {
             e.printStackTrace();
+        }finally {
+            try {
+                connection.close();
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
         }
     }
 
@@ -51,9 +57,15 @@ public class OrderServelet extends HttpServlet {
             prstm.setObject(2, jsonObject.getString("date"));
             prstm.setObject(3, jsonObject.getString("customerId"));
             prstm.executeUpdate();
-            connection.close();
+
         } catch (SQLException e) {
             e.printStackTrace();
+        }finally {
+            try {
+                connection.close();
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
         }
     }
 
@@ -70,9 +82,15 @@ public class OrderServelet extends HttpServlet {
             prstm.setObject(1, jsonObject.getString("date"));
             prstm.setObject(2, jsonObject.getString("customerId"));
             prstm.executeUpdate();
-            connection.close();
+
         } catch (SQLException e) {
             e.printStackTrace();
+        }finally {
+            try {
+                connection.close();
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
         }
     }
 
@@ -86,9 +104,15 @@ public class OrderServelet extends HttpServlet {
             PreparedStatement prstm = connection.prepareStatement("DELETE FROM `order` WHERE id=?");
             prstm.setObject(1, jsonObject.getString("id"));
             prstm.executeUpdate();
-            connection.close();
+
         } catch (SQLException e) {
             e.printStackTrace();
+        }finally {
+            try {
+                connection.close();
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
         }
     }
 }
