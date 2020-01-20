@@ -45,12 +45,6 @@ public class CustomerServelet extends HttpServlet {
             resp.getWriter().println(build.toString());
         } catch (SQLException e) {
             e.printStackTrace();
-        }finally {
-            try {
-                connection.close();
-            } catch (SQLException e) {
-                e.printStackTrace();
-            }
         }
     }
 
@@ -69,12 +63,6 @@ public class CustomerServelet extends HttpServlet {
 
         } catch (SQLException e) {
             e.printStackTrace();
-        }finally {
-            try {
-                connection.close();
-            } catch (SQLException e) {
-                e.printStackTrace();
-            }
         }
     }
 
@@ -115,12 +103,6 @@ public class CustomerServelet extends HttpServlet {
             connection.close();
         } catch (SQLException e) {
             e.printStackTrace();
-        }finally {
-            try {
-                connection.close();
-            } catch (SQLException e) {
-                e.printStackTrace();
-            }
         }
     }
 }
