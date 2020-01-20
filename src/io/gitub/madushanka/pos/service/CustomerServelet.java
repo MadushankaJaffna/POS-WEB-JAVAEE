@@ -22,7 +22,11 @@ public class CustomerServelet extends HttpServlet {
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         Connection connection = DbConnection.getInstance().getConnection();
         try {
-            PreparedStatement prst = connection.prepareStatement("SELECT * FROM Customer");
+            PreparedStatement prst = connection.prepareStatement("SELECT * FROM Customer LIMIT ? OFFSET ?");
+            int page =  (req.getParameter("page")==null)?0: Integer.parseInt(req.getParameter("page"));
+            int size = req.getParameter("size")==null?5: Integer.parseInt(req.getParameter("size"));
+            prst.setObject(1,size);
+            prst.setObject(2,page*size);
             ResultSet resultSet = prst.executeQuery();
             JsonArrayBuilder array = Json.createArrayBuilder();
             while (resultSet.next()) {
@@ -32,10 +36,13 @@ public class CustomerServelet extends HttpServlet {
                 obj.add("address", resultSet.getString(3));
                 array.add(obj);
             }
+            PreparedStatement prst2 = connection.prepareStatement("SELECT COUNT(*) FROM Customer");
+            ResultSet resultSet1 = prst2.executeQuery();
+            resultSet1.next();
+            resp.setIntHeader("X-Count",resultSet1.getInt(1));
             resp.setContentType("application.json");
             JsonArray build = array.build();
-            resp.setIntHeader("X-Count",build.size());
-            resp.getWriter().println(array.build().toString());
+            resp.getWriter().println(build.toString());
         } catch (SQLException e) {
             e.printStackTrace();
         }finally {
@@ -78,7 +85,7 @@ public class CustomerServelet extends HttpServlet {
             JsonReader reader = Json.createReader(req.getReader());
             JsonObject jsonObject = reader.readObject();
 
-            PreparedStatement prstm = connection.prepareStatement("UPDATE Customer SET name=? , address=? WHERE customerId=? ");
+            PreparedStatement prstm = connection.prepareStatement("UPDATE Customer SET name=?,address=? WHERE customerId=? ");
             prstm.setObject(3, jsonObject.getString("id"));
             prstm.setObject(1, jsonObject.getString("name"));
             prstm.setObject(2, jsonObject.getString("address"));

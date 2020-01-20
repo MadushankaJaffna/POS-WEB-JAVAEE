@@ -20,7 +20,11 @@ public class OrderDetailServelet extends HttpServlet {
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         Connection connection = DbConnection.getInstance().getConnection();
         try {
-            PreparedStatement prst = connection.prepareStatement("SELECT * FROM OrderDetail");
+            PreparedStatement prst = connection.prepareStatement("SELECT * FROM OrderDetail LIMIT ? OFFSET ?");
+            int page =  (req.getParameter("page")==null)?0: Integer.parseInt(req.getParameter("page"));
+            int size = req.getParameter("size")==null?5: Integer.parseInt(req.getParameter("size"));
+            prst.setObject(1,size);
+            prst.setObject(2,page*size);
             ResultSet resultSet = prst.executeQuery();
             JsonArrayBuilder array = Json.createArrayBuilder();
             while (resultSet.next()) {
@@ -31,6 +35,10 @@ public class OrderDetailServelet extends HttpServlet {
                 obj.add("UnitPrice", resultSet.getString(4));
                 array.add(obj);
             }
+            PreparedStatement prst2 = connection.prepareStatement("SELECT COUNT(*) FROM OrderDetail");
+            ResultSet resultSet1 = prst2.executeQuery();
+            resultSet1.next();
+            resp.setIntHeader("X-Count",resultSet1.getInt(1));
             resp.setHeader("Access-controll-allow-origin", "*");
             resp.setContentType("application.json");
             resp.getWriter().println(array.build().toString());
