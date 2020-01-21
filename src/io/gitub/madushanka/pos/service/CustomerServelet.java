@@ -20,11 +20,13 @@ public class CustomerServelet extends HttpServlet {
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+        System.out.println("Load All");
         Connection connection = DbConnection.getInstance().getConnection();
         try {
             PreparedStatement prst = connection.prepareStatement("SELECT * FROM Customer LIMIT ? OFFSET ?");
-            int page =  (req.getParameter("page")==null)?0: Integer.parseInt(req.getParameter("page"));
+            int page =  (req.getParameter("page")==null)?0: Integer.parseInt(req.getParameter("page"))-1;
             int size = req.getParameter("size")==null?5: Integer.parseInt(req.getParameter("size"));
+
             prst.setObject(1,size);
             prst.setObject(2,page*size);
             ResultSet resultSet = prst.executeQuery();
@@ -75,23 +77,18 @@ public class CustomerServelet extends HttpServlet {
 
             PreparedStatement prstm = connection.prepareStatement("UPDATE Customer SET name=?,address=? WHERE customerId=? ");
             prstm.setObject(3, jsonObject.getString("id"));
-            prstm.setObject(1, jsonObject.getString("name"));
-            prstm.setObject(2, jsonObject.getString("address"));
+            prstm.setObject(2, jsonObject.getString("name"));
+            prstm.setObject(1, jsonObject.getString("address"));
             prstm.executeUpdate();
 
         } catch (SQLException e) {
             e.printStackTrace();
-        }finally {
-            try {
-                connection.close();
-            } catch (SQLException e) {
-                e.printStackTrace();
-            }
         }
     }
 
     @Override
     protected void doDelete(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+        System.out.println();
         Connection connection = DbConnection.getInstance().getConnection();
         try {
             JsonReader reader = Json.createReader(req.getReader());
@@ -100,8 +97,8 @@ public class CustomerServelet extends HttpServlet {
             PreparedStatement prstm = connection.prepareStatement("DELETE FROM Customer WHERE customerId=? ");
             prstm.setObject(1, jsonObject.getString("id"));
             prstm.executeUpdate();
-            connection.close();
         } catch (SQLException e) {
+
             e.printStackTrace();
         }
     }

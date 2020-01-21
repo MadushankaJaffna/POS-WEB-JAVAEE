@@ -121,7 +121,7 @@
                   <div class="card-body">
                     <div class="form-group">
                       <label for="txtId">Customer ID</label>
-                      <input type="name" class="form-control" name="id" id="txtId" placeholder="Enter Customer ID">
+                      <input type="text" class="form-control" name="id" id="txtId" placeholder="Enter Customer ID">
                     </div>
                     <div class="form-group">
                       <label for="txtName">Customer Name</label>
@@ -136,7 +136,7 @@
 
                   <div class="card-footer">
                     <button type="button" class="btn btn-primary" id="btnSubmit">Save</button>
-                    <button type="reset" class="btn btn-warning">Clear</button>
+                    <button type="reset" class="btn btn-warning" id="btnClear">Clear</button>
                   </div>
                 </form>
               </div>
@@ -164,13 +164,15 @@
                   </tfoot>
                   </table>
                 </div><!-- /.card-body -->
-                <div class="card-footer">
-                  <ul class="pagination pagination-sm m-0">
-                    <li class="page-item"><a class="page-link" href="#">&laquo;</a></li>
-                    <li class="page-item"><a class="page-link" href="#">1</a></li>
-                    <li class="page-item"><a class="page-link" href="#">2</a></li>
-                    <li class="page-item"><a class="page-link" href="#">3</a></li>
-                    <li class="page-item"><a class="page-link" href="#">&raquo;</a></li>
+                <div class="card-footer" id="pagination">
+                  <ul class="pagination pagination-sm m-0" >
+                    <div class="pagination">
+                      <a href="#" id="backword">&laquo;</a>
+                      <a href="#" id="first">1</a>
+                      <a href="#" id="middle">2</a>
+                      <a href="#" id="last">3</a>
+                      <a href="#" id="forword">&raquo;</a>
+                    </div>
                   </ul>
                 </div>
               </div>
