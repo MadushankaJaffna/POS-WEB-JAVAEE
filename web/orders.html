@@ -121,7 +121,7 @@
                   <div class="card-body">
                     <div class="form-group">
                       <label for="txtId">Customer ID</label>
-                      <select class="form-control custom-select" id="txtId" placeholder="Select Customer ID" onchange="customerLoad()">
+                      <select class="form-control custom-select" id="txtId" placeholder="Select Customer ID">
                       </select>
                     </div>
                     <div class="form-group">
@@ -130,7 +130,7 @@
                     </div>
                     <div class="form-group">
                       <label for="txtCode">Item Code</label>
-                      <select class="form-control custom-select" id="txtCode" placeholder="Enter Item Code" onchange="itemLoad()">
+                      <select class="form-control custom-select" id="txtCode" placeholder="Enter Item Code">
                       </select>
                     </div>
                     <div class="form-group">
@@ -186,14 +186,6 @@
                   </table>
                 </div><!-- /.card-body -->
                 <div class="card-footer">
-                  <ul class="pagination pagination-sm m-0">
-                    <li class="page-item"><a class="page-link" href="#">&laquo;</a></li>
-                    <li class="page-item"><a class="page-link" href="#">1</a></li>
-                    <li class="page-item"><a class="page-link" href="#">2</a></li>
-                    <li class="page-item"><a class="page-link" href="#">3</a></li>
-                    <li class="page-item"><a class="page-link" href="#">&raquo;</a></li>
-
-                  </ul>
                   <div id="total"><h5><b>Total</b></h5></div>
                   <div id="porderdiv">
                     <button type="reset" class="btn btn-primary" id="placeOrder">Place Oredr</button>
@@ -232,8 +224,7 @@
   <script src="plugins/bootstrap/js/bootstrap.bundle.min.js"></script>
   <!-- AdminLTE App -->
   <script src="dist/js/adminlte.js"></script>
-  <!-- AdminLTE dashboard demo (This is only for demo purposes) -->
-  <script src="dist/js/pages/dashboard.js"></script>
+
   <script src="dist/js/pages/order.js"></script>
 
   <!-- AdminLTE for demo purposes -->

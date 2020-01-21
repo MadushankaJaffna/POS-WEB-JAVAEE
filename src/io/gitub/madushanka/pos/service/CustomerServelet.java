@@ -20,7 +20,7 @@ public class CustomerServelet extends HttpServlet {
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        System.out.println("Load All");
+
         Connection connection = DbConnection.getInstance().getConnection();
         try {
             PreparedStatement prst = connection.prepareStatement("SELECT * FROM Customer LIMIT ? OFFSET ?");
