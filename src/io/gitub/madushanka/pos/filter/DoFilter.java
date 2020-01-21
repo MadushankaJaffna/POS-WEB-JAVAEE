@@ -8,7 +8,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
-@WebFilter(urlPatterns = {"/api/v1/customers"})
+@WebFilter(urlPatterns = {"/api/v1/customers","/api/v1/items"})
 public class DoFilter extends HttpFilter {
 
     @Override

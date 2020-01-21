@@ -21,7 +21,7 @@ public class ItemServelet extends HttpServlet {
         Connection connection = DbConnection.getInstance().getConnection();
         try {
             PreparedStatement prst = connection.prepareStatement("SELECT * FROM Item LIMIT ? OFFSET ?");
-            int page =  (req.getParameter("page")==null)?0: Integer.parseInt(req.getParameter("page"));
+            int page =  (req.getParameter("page")==null)?0: Integer.parseInt(req.getParameter("page"))-1;
             int size = req.getParameter("size")==null?5: Integer.parseInt(req.getParameter("size"));
             prst.setObject(1,size);
             prst.setObject(2,page*size);
@@ -29,33 +29,30 @@ public class ItemServelet extends HttpServlet {
             JsonArrayBuilder array = Json.createArrayBuilder();
             while (resultSet.next()) {
                 JsonObjectBuilder obj = Json.createObjectBuilder();
+                /*String qty = String.valueOf(resultSet.getInt(3));
+                String price = String.valueOf(resultSet.getDouble(4));*/
                 obj.add("code", resultSet.getString(1));
                 obj.add("description", resultSet.getString(2));
-                obj.add("qtyOnHand", resultSet.getString(3));
-                obj.add("unitPrice", resultSet.getString(4));
-                array.add(obj);
+                obj.add("qtyOnHand",resultSet.getString(3) );
+                obj.add("unitPrice",resultSet.getString(4));
+                array.add(obj.build());
             }
             PreparedStatement prst2 = connection.prepareStatement("SELECT COUNT(*) FROM Item");
             ResultSet resultSet1 = prst2.executeQuery();
             resultSet1.next();
             resp.setIntHeader("X-Count",resultSet1.getInt(1));
-            resp.setHeader("Access-controll-allow-origin", "*");
-            resp.setContentType("application.json");
+            resp.setHeader("Access-Control-Allow-Origin", "*");
+            resp.setContentType("application/json");
             resp.getWriter().println(array.build().toString());
 
         } catch (SQLException e) {
             e.printStackTrace();
-        }finally {
-            try {
-                connection.close();
-            } catch (SQLException e) {
-                e.printStackTrace();
-            }
         }
-    }
+     }
+
 
     @Override
-    protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+    protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws IOException {
         Connection connection = DbConnection.getInstance().getConnection();
         try {
             JsonReader reader = Json.createReader(req.getReader());
@@ -65,17 +62,11 @@ public class ItemServelet extends HttpServlet {
             prstm.setObject(1, jsonObject.getString("code"));
             prstm.setObject(2, jsonObject.getString("description"));
             prstm.setObject(3, jsonObject.getString("qtyOnHand"));
-            prstm.setObject(3, jsonObject.getString("unitPrice"));
+            prstm.setObject(4, jsonObject.getString("unitPrice"));
             prstm.executeUpdate();
 
         } catch (SQLException e) {
             e.printStackTrace();
-        }finally {
-            try {
-                connection.close();
-            } catch (SQLException e) {
-                e.printStackTrace();
-            }
         }
     }
 
@@ -95,12 +86,6 @@ public class ItemServelet extends HttpServlet {
 
         } catch (SQLException e) {
             e.printStackTrace();
-        }finally {
-            try {
-                connection.close();
-            } catch (SQLException e) {
-                e.printStackTrace();
-            }
         }
     }
 
@@ -112,17 +97,11 @@ public class ItemServelet extends HttpServlet {
             JsonObject jsonObject = reader.readObject();
 
             PreparedStatement prstm = connection.prepareStatement("DELETE FROM Item  WHERE code=?");
-            prstm.setObject(1, jsonObject.getString("code"));
+            prstm.setObject(1, jsonObject.getString("id"));
             prstm.executeUpdate();
 
         } catch (SQLException e) {
             e.printStackTrace();
-        }finally {
-            try {
-                connection.close();
-            } catch (SQLException e) {
-                e.printStackTrace();
-            }
         }
     }
 }

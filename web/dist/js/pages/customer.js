@@ -31,7 +31,6 @@ function loadcustomer() {
             }
             showOrHideFooter();
             var customerCount = http.getResponseHeader("X-Count");
-            console.log(customerCount);
             pagination(customerCount);
         }
     };
@@ -63,7 +62,7 @@ $("#btnSubmit").click(function () {
             var http = new XMLHttpRequest();
 
             http.onreadystatechange = function () {
-                if (http.readyState == 4, http.status == 400) {
+                if (http.readyState == 4&& http.status == 400) {
 
                 }
             };
@@ -135,13 +134,10 @@ function showOrHideFooter(){
 }
 
 $("#tbl-customer").on('click','tbody tr td i',function () {
-
-
         var http = new XMLHttpRequest();
         var cusId = {
             id: $(this).parents("tr").children("td:first-child").text()
         };
-
         if (confirm("Do You Wish To Delete This Customer..!")) {
             http.onreadystatechange = function () {
                 if(http.readyState==4 && http.status==200){
@@ -155,7 +151,7 @@ $("#tbl-customer").on('click','tbody tr td i',function () {
                     $("#txtName").val("");
                     $("#txtCustomerAddress").val("");
                     $("#btnSubmit").text("Save");
-                    showOrHideFooter();
+
                 }else if(http.status==500&&http.readyState==2){
                     console.log(http.status);
                     console.log(http.readyState)
@@ -177,7 +173,7 @@ $("#tbl-customer").on('click','tbody tr',function () {
     $("#btnSubmit").text("Update");
 });
 
-$("#btnClear").click(function aaa() {
+$("#btnClear").click(function () {
     $("#btnSubmit").text("Save");
    $("#txtId").readOnly=false;
 });

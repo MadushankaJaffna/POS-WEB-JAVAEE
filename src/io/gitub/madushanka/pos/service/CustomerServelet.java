@@ -36,13 +36,13 @@ public class CustomerServelet extends HttpServlet {
                 obj.add("id", resultSet.getString(1));
                 obj.add("name", resultSet.getString(2));
                 obj.add("address", resultSet.getString(3));
-                array.add(obj);
+                array.add(obj.build());
             }
             PreparedStatement prst2 = connection.prepareStatement("SELECT COUNT(*) FROM Customer");
             ResultSet resultSet1 = prst2.executeQuery();
             resultSet1.next();
             resp.setIntHeader("X-Count",resultSet1.getInt(1));
-            resp.setContentType("application.json");
+            resp.setContentType("application/json");
             JsonArray build = array.build();
             resp.getWriter().println(build.toString());
         } catch (SQLException e) {
