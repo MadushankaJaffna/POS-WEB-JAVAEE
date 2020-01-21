@@ -2,7 +2,7 @@ $(function () {
 
     loadcustomer();
     $("#txtId").focus();
-    showOrHideFooter();
+    $("#first").addClass('active');
 });
 
 var pagenumber=1;
@@ -19,7 +19,7 @@ function loadcustomer() {
             var tbldata = JSON.parse(http.responseText);
 
             for (var i = 0; i < tbldata.length; i++) {
-                var html = '<tr>' +
+                var html = '<tr class="mouseChange">' +
                     '<td>' + tbldata[i].id + '</td>' +
                     '<td>' + tbldata[i].name + '</td>' +
                     '<td>' + tbldata[i].address + '</td>' +
@@ -29,13 +29,14 @@ function loadcustomer() {
                     '</tr>';
                 $("#tbl-customer tbody").append(html);
             }
+            showOrHideFooter();
             var customerCount = http.getResponseHeader("X-Count");
+            console.log(customerCount);
             pagination(customerCount);
         }
     };
     http.open('GET', 'http://localhost:8080/posweb/api/v1/customers'+'?size='+5+'&page='+pagenumber, async = true);
     http.setRequestHeader('Content-Type', 'application/json');
-    /*http.setHeaderValue({})*/
     http.send();
 
 }
@@ -69,7 +70,7 @@ $("#btnSubmit").click(function () {
 
             http.open('POST', 'http://localhost:8080/posweb/api/v1/customers', async = true)
             http.send(JSON.stringify(customer));
-            showOrHideFooter();
+
         } else {
             if (!cusId.match("^C[0-9]+$")) {
                 $("#txtId").addClass("invalid");
@@ -135,6 +136,7 @@ function showOrHideFooter(){
 
 $("#tbl-customer").on('click','tbody tr td i',function () {
 
+
         var http = new XMLHttpRequest();
         var cusId = {
             id: $(this).parents("tr").children("td:first-child").text()
@@ -147,9 +149,13 @@ $("#tbl-customer").on('click','tbody tr td i',function () {
                     /*
                         $(this).parents("tr").fadeOut(1000, function () {
                             $(this).remove();
-                            showOrHideFooter();
 
                     });*/
+                    $("#txtId").val("");
+                    $("#txtName").val("");
+                    $("#txtCustomerAddress").val("");
+                    $("#btnSubmit").text("Save");
+                    showOrHideFooter();
                 }else if(http.status==500&&http.readyState==2){
                     console.log(http.status);
                     console.log(http.readyState)
@@ -206,8 +212,13 @@ $("#last").click(function () {
 });
 function pagination(number) {
  let pages = Math.ceil((number) / 5);
+    if(number==0){
+        $("#first").hide();
+        $("#middle").hide();
+        $("#last").hide();
+    }
 
-   if(pages == 1){
+   else if(pages == 1){
        $("#first").show();
        $("#middle").hide();
        $("#last").hide();
