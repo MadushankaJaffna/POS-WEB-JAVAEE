@@ -1,7 +1,6 @@
 
 var customerName = [];
 var itemdetail= [];
-var orders=[];
 var orderDetailsList = [];
 $(function () {
     $("#txtId").focus();

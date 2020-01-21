@@ -14,68 +14,38 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
-@WebServlet("/api/v1/oderDetail")
-public class OrderDetailServelet extends HttpServlet {
+@WebServlet("/api/v1/search")
+public class SearchServelet extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         Connection connection = DbConnection.getInstance().getConnection();
-        try {
-            PreparedStatement prst = connection.prepareStatement("SELECT * FROM OrderDetail LIMIT ? OFFSET ?");
-            int page =  (req.getParameter("page")==null)?0: Integer.parseInt(req.getParameter("page"));
-            int size = req.getParameter("size")==null?5: Integer.parseInt(req.getParameter("size"));
-            prst.setObject(1,size);
-            prst.setObject(2,page*size);
-            ResultSet resultSet = prst.executeQuery();
-            JsonArrayBuilder array = Json.createArrayBuilder();
-            while (resultSet.next()) {
-                JsonObjectBuilder obj = Json.createObjectBuilder();
-                obj.add("ItemId", resultSet.getString(1));
-                obj.add("OrderId", resultSet.getString(2));
-                obj.add("Qty", resultSet.getString(3));
-                obj.add("UnitPrice", resultSet.getString(4));
-                array.add(obj);
-            }
-            PreparedStatement prst2 = connection.prepareStatement("SELECT COUNT(*) FROM OrderDetail");
-            ResultSet resultSet1 = prst2.executeQuery();
-            resultSet1.next();
-            resp.setIntHeader("X-Count",resultSet1.getInt(1));
-            resp.setHeader("Access-controll-allow-origin", "*");
-            resp.setContentType("application.json");
-            resp.getWriter().println(array.build().toString());
+        String query = req.getParameter("query");
 
+        System.out.println("query Eka :" + query);
+        try {
+            PreparedStatement ps = connection.prepareStatement("SELECT OD.Order_id , o.date , C.customerId , C.name , OD.qty*OD.unitPrice AS total FROM Customer C INNER JOIN `order` o on C.customerId = o.customerID INNER JOIN OrderDetail OD on o.id = OD.Order_id INNER JOIN Item I on OD.Item_id = I.code WHERE o.id LIKE ? OR C.customerId LIKE ? OR C.name LIKE ? OR o.date LIKE ?");
+
+            ps.setObject(1, "%" + query + "%");
+            ps.setObject(2, "%" + query + "%");
+            ps.setObject(3, "%" + query + "%");
+            ps.setObject(4, "%" + query + "%");
+
+            ResultSet rst = ps.executeQuery();
+
+            JsonArrayBuilder arrayBuilder = Json.createArrayBuilder();
+            while (rst.next()) {
+                JsonObjectBuilder ob = Json.createObjectBuilder();
+                ob.add("oid", rst.getString(1));
+                ob.add("odate", rst.getString(2));
+                ob.add("cid", rst.getString(3));
+                ob.add("cname", rst.getString(4));
+                ob.add("total", rst.getString(5));
+                arrayBuilder.add(ob.build());
+            }
+            resp.setContentType("application/json");
+            resp.getWriter().println(arrayBuilder.build().toString());
         } catch (SQLException e) {
             e.printStackTrace();
-        }finally {
-            try {
-                connection.close();
-            } catch (SQLException e) {
-                e.printStackTrace();
-            }
-        }
-    }
-
-    @Override
-    protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        Connection connection = DbConnection.getInstance().getConnection();
-        try {
-            JsonReader reader = Json.createReader(req.getReader());
-            JsonObject jsonObject = reader.readObject();
-
-            PreparedStatement prstm = connection.prepareStatement("INSERT INTO OrderDetail VALUES(?,?,?,?)");
-            prstm.setObject(1, jsonObject.getString("ItemId"));
-            prstm.setObject(2, jsonObject.getString("OrderId"));
-            prstm.setObject(3, jsonObject.getString("Qty"));
-            prstm.setObject(4, jsonObject.getString("UnitPrice"));
-            prstm.executeUpdate();
-
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }finally {
-            try {
-                connection.close();
-            } catch (SQLException e) {
-                e.printStackTrace();
-            }
         }
     }
 
