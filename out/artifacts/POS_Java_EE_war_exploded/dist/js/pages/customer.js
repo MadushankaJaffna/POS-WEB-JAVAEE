@@ -5,7 +5,7 @@ $(function () {
     showOrHideFooter();
 });
 
-var pagenumber=0;
+var pagenumber=1;
 
 function loadcustomer() {
 
@@ -30,11 +30,10 @@ function loadcustomer() {
                 $("#tbl-customer tbody").append(html);
             }
             var customerCount = http.getResponseHeader("X-Count");
-            console.log(pagenumber);
             pagination(customerCount);
         }
     };
-    http.open('GET', 'http://localhost:8080/posweb/api/v1/customers'+'?size='+2+'&page='+pagenumber, async = true);
+    http.open('GET', 'http://localhost:8080/posweb/api/v1/customers'+'?size='+5+'&page='+pagenumber, async = true);
     http.setRequestHeader('Content-Type', 'application/json');
     /*http.setHeaderValue({})*/
     http.send();
@@ -57,15 +56,7 @@ $("#btnSubmit").click(function () {
                             address: cusAddress
                             };
 
-            var html = '<tr>' +
-                '<td>' + cusId + '</td>' +
-                '<td>' + cusName + '</td>' +
-                '<td>' + cusAddress + '</td>' +
-                '<td>' +
-                '<i class="fa fa-trash red"></i>' +
-                '</td>' +
-                '</tr>';
-            $("#tbl-customer tbody").append(html);
+            loadcustomer();
 
 
             var http = new XMLHttpRequest();
@@ -148,14 +139,20 @@ $("#tbl-customer").on('click','tbody tr td i',function () {
         var cusId = {
             id: $(this).parents("tr").children("td:first-child").text()
         };
+
         if (confirm("Do You Wish To Delete This Customer..!")) {
             http.onreadystatechange = function () {
                 if(http.readyState==4 && http.status==200){
-                    $(this).parents("tr").fadeOut(1000, function () {
-                        $(this).remove();
-                        showOrHideFooter();
-                    });
-                }else if (http.status==500){
+                loadcustomer();
+
+                    /*
+                        $(this).parents("tr").fadeOut(1000, function () {
+                            $(this).remove();
+                            showOrHideFooter();
+
+                    });*/
+                }else {
+
                     alert("Customer Already has an Order!")
                 }
             };

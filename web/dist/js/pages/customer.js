@@ -30,7 +30,6 @@ function loadcustomer() {
                 $("#tbl-customer tbody").append(html);
             }
             var customerCount = http.getResponseHeader("X-Count");
-            console.log(pagenumber);
             pagination(customerCount);
         }
     };
@@ -144,14 +143,16 @@ $("#tbl-customer").on('click','tbody tr td i',function () {
         if (confirm("Do You Wish To Delete This Customer..!")) {
             http.onreadystatechange = function () {
                 if(http.readyState==4 && http.status==200){
+                loadcustomer();
+                    /*
+                        $(this).parents("tr").fadeOut(1000, function () {
+                            $(this).remove();
+                            showOrHideFooter();
 
-                    $(this).parents("tr").fadeOut(1000, function () {
-                        $(this).remove();
-                        showOrHideFooter();
-                    });
-
-
-                }else if (http.status==500){
+                    });*/
+                }else if(http.status==500&&http.readyState==2){
+                    console.log(http.status);
+                    console.log(http.readyState)
                     alert("Customer Already has an Order!")
                 }
             };

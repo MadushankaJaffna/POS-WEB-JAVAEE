@@ -98,7 +98,7 @@ public class CustomerServelet extends HttpServlet {
             prstm.setObject(1, jsonObject.getString("id"));
             prstm.executeUpdate();
         } catch (SQLException e) {
-
+            resp.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
             e.printStackTrace();
         }
     }
