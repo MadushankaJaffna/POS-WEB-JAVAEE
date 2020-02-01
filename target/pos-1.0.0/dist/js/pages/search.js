@@ -6,7 +6,31 @@ $(function () {
 
 
 function loadOrders() {
-    var http = new XMLHttpRequest();
+
+    var ajaxConfig = {
+        method:'GET',
+        url:'http://localhost:8080/posweb/api/v1/search' + '?query=' + query,
+        async :true
+    };
+
+    $.ajax(ajaxConfig).done(function (search,state,jqSHR) {
+        $("#tbl-orders tbody tr").remove();
+        for (var i = 0; i < search.length; i++) {
+            var html = '<tr>' +
+                '<td>' + search[i].oid + '</td>' +
+                '<td>' + search[i].odate + '</td>' +
+                '<td>' + search[i].cid + '</td>' +
+                '<td>' + search[i].cname + '</td>' +
+                '<td>' + search[i].total + '</td>' +
+                '</tr>';
+            $("#tbl-orders tbody").append(html);
+        }
+    }).fail(function (jqSHR,state,error) {
+    console.log(error);
+    });
+
+
+   /* var http = new XMLHttpRequest();
 
     http.onreadystatechange = function () {
         if (http.readyState == 4 && http.status == 200) {
@@ -27,8 +51,7 @@ function loadOrders() {
     };
     http.open('GET', 'http://localhost:8080/posweb/api/v1/search' + '?query=' + query, true);
     http.setRequestHeader("Content-Type", "application/json");
-
-    http.send();
+    http.send();*/
 }
 
 $("#txtSearch").keyup(function () {

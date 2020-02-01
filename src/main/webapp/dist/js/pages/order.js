@@ -51,7 +51,7 @@ $(function () {
         setRequestHeader:('Content-Type', 'application/json')
     };
 
-    $.ajax(ajaxConfig1).done(function (custom,state,jqSHR) {
+    $.ajax(ajaxConfig2).done(function (custom,state,jqSHR) {
         for(var l=0;l<custom.length;l++){
             var data = '<option>'+custom[l].code+'</option>';
             itemdetail.push({codeId:custom[l].code,discript:custom[l].description,qtyon:custom[l].qtyOnHand,unitp:custom[l].unitPrice});
@@ -181,7 +181,7 @@ $('#placeOrder').click(function () {
         async:true,
         setRequestHeader:("Content-Type", "application/json"),
         data:JSON.stringify(orderDetailsList)
-    }
+    };
 
     $.ajax(ajaxConfig).done(function (order,state,jqSHR) {
         alert("Order Placed Successfully !");

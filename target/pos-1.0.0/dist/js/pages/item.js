@@ -229,6 +229,7 @@ $("#tbl-items").on('click','tbody tr td i',function () {
             $("#txtQtyOnHand").val("");
             $("#txtUnitPrice").val("");
             $("#btnSubmit").text("Save");
+
         }).fail(function (jqSHR,state,error) {
             console.log(error);
             alert("Can not delete item please try again");

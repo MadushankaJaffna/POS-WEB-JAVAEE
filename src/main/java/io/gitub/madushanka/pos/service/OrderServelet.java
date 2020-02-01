@@ -29,7 +29,7 @@ public class OrderServelet extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
 
-        try {
+        /*try {
             int page = req.getParameter("page") == null ? 0 : Integer.parseInt(req.getParameter("page"));
             int size = req.getParameter("size") == null ? 5 : Integer.parseInt(req.getParameter("size"));
             PreparedStatement ps = getConnection().prepareStatement("SELECT * FROM `order` LIMIT ? OFFSET ?");
@@ -38,15 +38,13 @@ public class OrderServelet extends HttpServlet {
             ResultSet rst = ps.executeQuery();
             JsonArrayBuilder arrayBuilder = Json.createArrayBuilder();
             while (rst.next()){
-                String code = rst.getString(1);
-                String description = rst.getString(2);
-                String qtyOnHand = rst.getString(3);
-                String unitPrice = rst.getString(4);
+                String id = rst.getString(1);
+                String date = rst.getString(2);
+                String customerId = rst.getString(3);
                 JsonObjectBuilder ob = Json.createObjectBuilder();
-                ob.add("code",code);
-                ob.add("description",description);
-                ob.add("qtyOnHand",qtyOnHand);
-                ob.add("unitPrice",unitPrice);
+                ob.add("id",id);
+                ob.add("date",date);
+                ob.add("customerId",customerId);
                 arrayBuilder.add(ob.build());
             }
             ResultSet resultSet = getConnection().createStatement().executeQuery("SELECT COUNT(*) FROM `Order`");
@@ -59,7 +57,7 @@ public class OrderServelet extends HttpServlet {
         } catch (SQLException e) {
             e.printStackTrace();
 
-        }
+        }*/
     }
 
     @Override
