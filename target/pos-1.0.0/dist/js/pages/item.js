@@ -7,7 +7,38 @@ $(function () {
 });
 var pagenumber=1;
 function loadItem() {
-    var http = new XMLHttpRequest();
+
+    var ajaxConfig = {
+        method:'GET',
+        url:'http://localhost:8080/posweb/api/v1/items'+'?size='+5+'&page='+pagenumber,
+        async:true,
+        setRequestHeader:('Content-Type', 'application/json')
+    };
+    $.ajax(ajaxConfig).done(function (items,state,jqSHR) {
+        $("#tbl-items tbody tr").remove();
+
+        for (var i = 0; i < items.length; i++) {
+            var html = '<tr class="mouseChange">' +
+                '<td>' + items[i].code + '</td>' +
+                '<td>' + items[i].description + '</td>' +
+                '<td>' + items[i].qtyOnHand + '</td>' +
+                '<td>' + items[i].unitPrice + '</td>' +
+                '<td>' +
+                '<i class="fa fa-trash red"></i>' +
+                '</td>' +
+                '</tr>';
+            $("#tbl-items tbody").append(html);
+        }
+        showOrHideFooter();
+        var itemCount = jqSHR.getResponseHeader("X-Count");
+        pagination(itemCount);
+
+    }).fail(function (jqSHR,state,error) {
+        console.log(error);
+    });
+
+
+    /*var http = new XMLHttpRequest();
 
     http.onreadystatechange = function () {
         if (http.readyState == 4 && http.status == 200) {
@@ -35,7 +66,7 @@ function loadItem() {
     };
     http.open('GET', 'http://localhost:8080/posweb/api/v1/items'+'?size='+5+'&page='+pagenumber, async = true);
     http.setRequestHeader('Content-Type', 'application/json');
-    http.send();
+    http.send();*/
 
 }
 $("#btnSubmit").click(function () {
@@ -56,7 +87,21 @@ $("#btnSubmit").click(function () {
                 unitPrice: unitPrice
             };
 
-            var http = new XMLHttpRequest();
+            var ajaxConfig = {
+                method:'POST',
+                url:'http://localhost:8080/posweb/api/v1/items',
+                async:true,
+                data:JSON.stringify(item)
+            };
+
+            $.ajax(ajaxConfig).done(function (item,state,jqSHR) {
+                loadItem();
+            }).fail(function (jqSHR,state,error) {
+                console.log(error);
+                alert("Can not save item please try again");
+            });
+
+           /* var http = new XMLHttpRequest();
 
             http.onreadystatechange = function () {
                 if (http.readyState == 4 && http.status == 200) {
@@ -65,7 +110,7 @@ $("#btnSubmit").click(function () {
 
             };
             http.open('POST', 'http://localhost:8080/posweb/api/v1/items', async = true);
-            http.send(JSON.stringify(item));
+            http.send(JSON.stringify(item));*/
 
 
         } else {
@@ -97,7 +142,21 @@ $("#btnSubmit").click(function () {
                 unitPrice: unitPrice
             };
 
-            var http = new XMLHttpRequest();
+            var ajaxConfig = {
+                method:'PUT',
+                url:'http://localhost:8080/posweb/api/v1/items',
+                async:true,
+                data:JSON.stringify(item)
+            };
+
+            $.ajax(ajaxConfig).done(function (item,state,jqSHR) {
+                loadItem();
+            }).fail(function (jqSHR,state,error) {
+                console.log(error);
+                alert("Cannot update Item Please Try again")
+            });
+
+           /* var http = new XMLHttpRequest();
 
             http.onreadystatechange = function () {
                 if (http.readyState == 4 && http.status == 200) {
@@ -106,7 +165,7 @@ $("#btnSubmit").click(function () {
             };
 
             http.open('PUT', 'http://localhost:8080/posweb/api/v1/items', async = true)
-            http.send(JSON.stringify(item));
+            http.send(JSON.stringify(item));*/
 
 
         } else{
@@ -147,19 +206,41 @@ function showOrHideFooter() {
 }
 
 $("#tbl-items").on('click','tbody tr td i',function () {
-    var http = new XMLHttpRequest();
+
     var itemId = {
         id: $(this).parents("tr").children("td:first-child").text()
     };
-    console.log(itemId);
+    var ajaxConfig = {
+        method:'DELETE',
+        url:'http://localhost:8080/posweb/api/v1/items',
+        async:true,
+        data:JSON.stringify(itemId)
+    };
+
+
+    //var http = new XMLHttpRequest();
     if(confirm("Do You Wish To Delete This Item..!")){
-        http.onreadystatechange = function () {
+
+
+        $.ajax(ajaxConfig).done(function (items,state,jqSHR) {
+            loadItem();
+            $("#txtId").val("");
+            $("#txtName").val("");
+            $("#txtQtyOnHand").val("");
+            $("#txtUnitPrice").val("");
+            $("#btnSubmit").text("Save");
+        }).fail(function (jqSHR,state,error) {
+            console.log(error);
+            alert("Can not delete item please try again");
+        });
+
+        /*http.onreadystatechange = function () {
             if (http.readyState == 4 && http.status == 200) {
                 loadItem();
-                /*$(this).parents("tr").fadeOut(1000, function(){
+                /!*$(this).parents("tr").fadeOut(1000, function(){
                     $(this).remove();
 
-                });*/
+                });*!/
                 $("#txtId").val("");
                 $("#txtName").val("");
                 $("#txtQtyOnHand").val("");
@@ -169,7 +250,7 @@ $("#tbl-items").on('click','tbody tr td i',function () {
              }
         };
         http.open('DELETE', 'http://localhost:8080/posweb/api/v1/items', async = true);
-        http.send(JSON.stringify(itemId));
+        http.send(JSON.stringify(itemId));*/
     }
 });
 

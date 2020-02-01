@@ -18,7 +18,7 @@ public class Connectionpool implements ServletContextListener {
         bds.setPassword("123");
         bds.setUrl("jdbc:mysql://localhost:3306/DEP4Hibernate");
         bds.setInitialSize(10); //create 10 connection
-        bds.setMaxTotal(20);    //can create more connetion 10
+        bds.setMaxTotal(200);    //can create more connetion 10
         bds.setMaxIdle(10);     //connection tiyaganna pluwan 10
         sce.getServletContext().setAttribute("pool", bds);
     }

@@ -140,7 +140,6 @@ function showOrHideFooter() {
 
 $('#placeOrder').click(function () {
     var cusId = $("#txtId").val();
-
     var http = new XMLHttpRequest();
 
     http.onreadystatechange = function () {
