@@ -7,10 +7,25 @@ $(function () {
 
     /////////////////load customer id to Dropdown box/////////////////////////////
 
+    var ajaxConfig1 = {
+        method:'GET',
+        url:'http://localhost:8080/posweb/api/v1/custom',
+        async:true,
+        setRequestHeader:('Content-Type', 'application/json')
+    };
 
+    $.ajax(ajaxConfig1).done(function (custom,state,jqSHR) {
+        for(var i=0;i<custom.length;i++){
+            var data = '<option>'+custom[i].id+'</option>';
+            customerName.push({id:custom[i].id,name:custom[i].name});
+            $('#txtId').append(data);
+        }
+    }).fail(function (jqSHR,state,error) {
+        console.log(error);
+        alert("cannot load all customers to drop Down Box");
+    });
 
-    var http = new XMLHttpRequest();
-
+   /* var http = new XMLHttpRequest();
     http.onreadystatechange = function () {
         if (http.readyState == 4 && http.status == 200) {
             var tbldata = JSON.parse(http.responseText);
@@ -24,12 +39,31 @@ $(function () {
         };
     http.open('GET', 'http://localhost:8080/posweb/api/v1/custom', async = true);
     http.setRequestHeader('Content-Type', 'application/json');
-    http.send();
+    http.send();*/
 
 
     ////////////////////////////load Item to Drop Down Box////////////////////////////////////
 
-    var http1 = new XMLHttpRequest();
+    var ajaxConfig2 = {
+        method:'POST',
+        url:'http://localhost:8080/posweb/api/v1/custom',
+        async:true,
+        setRequestHeader:('Content-Type', 'application/json')
+    };
+
+    $.ajax(ajaxConfig1).done(function (custom,state,jqSHR) {
+        for(var l=0;l<custom.length;l++){
+            var data = '<option>'+custom[l].code+'</option>';
+            itemdetail.push({codeId:custom[l].code,discript:custom[l].description,qtyon:custom[l].qtyOnHand,unitp:custom[l].unitPrice});
+            $('#txtCode').append(data);
+        }
+    }).fail(function (jqSHR,state,error) {
+        console.log(error);
+        alert("cannot load all items to drop Down Box");
+    });
+
+
+    /*var http1 = new XMLHttpRequest();
 
     http1.onreadystatechange = function () {
         if (http1.readyState == 4 && http1.status == 200) {
@@ -44,7 +78,7 @@ $(function () {
     };
     http1.open('POST', 'http://localhost:8080/posweb/api/v1/custom', async = true);
     http1.setRequestHeader('Content-Type', 'application/json');
-    http1.send();
+    http1.send();*/
 
 
 //////////////////////////////////// Delete From Table /////////////////////////////////////
@@ -140,8 +174,24 @@ function showOrHideFooter() {
 
 $('#placeOrder').click(function () {
     var cusId = $("#txtId").val();
-    var http = new XMLHttpRequest();
 
+    var ajaxConfig = {
+        method:'POST',
+        url:'http://localhost:8080/posweb/api/v1/order'+'?&cusId='+cusId,
+        async:true,
+        setRequestHeader:("Content-Type", "application/json"),
+        data:JSON.stringify(orderDetailsList)
+    }
+
+    $.ajax(ajaxConfig).done(function (order,state,jqSHR) {
+        alert("Order Placed Successfully !");
+        showOrHideFooter();
+    }).fail(function (jqSHR,state,error) {
+        console.log(error);
+        alert("Cannot Place Order");
+    });
+
+    /*var http = new XMLHttpRequest();
     http.onreadystatechange = function () {
         if (http.readyState == 4 && http.status == 200) {
             alert("Order Placed Successfully !")
@@ -150,8 +200,6 @@ $('#placeOrder').click(function () {
     };
 
     http.open('POST', 'http://localhost:8080/posweb/api/v1/order'+'?&cusId='+cusId, true);
-
     http.setRequestHeader("Content-Type", "application/json");
-
-    http.send(JSON.stringify(orderDetailsList));
+    http.send(JSON.stringify(orderDetailsList));*/
 });
